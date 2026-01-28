@@ -1,2 +1,5 @@
 snowflake-snowpark-python
 pydantic
+pyyaml
+pytest
+ruff

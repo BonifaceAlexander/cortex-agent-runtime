@@ -1,0 +1,17 @@
+agent:
+  name: invoice_validator
+  model: cortex.llama3
+  retry_policy:
+    max_retries: 3
+  steps:
+    - name: extract_entities
+      type: INSTRUCTION
+      instruction: "Extract the vendor name, date, and total amount from the invoice text."
+    - name: validate_math
+      type: TOOL_USE
+      tool_name: math_validator
+      inputs:
+        amount: "{{ steps.extract_entities.output.amount }}"
+    - name: generate_summary
+      type: INSTRUCTION
+      instruction: "Generate a JSON summary of the validation results."
