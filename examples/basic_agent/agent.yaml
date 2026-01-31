@@ -1,0 +1,6 @@
+name: basic_agent
+model: cortex-llama3-70b
+steps:
+  - name: step1
+    type: INSTRUCTION
+    instruction: "Say hello to the world and tell me a fun fact about snowflakes."
