@@ -1,5 +1,9 @@
 # Cortex Agent Runtime
 
+[![Documentation](https://img.shields.io/badge/docs-live-blue.svg)](https://BonifaceAlexander.github.io/cortex-agent-runtime/)
+
+> **Full Documentation**: [https://BonifaceAlexander.github.io/cortex-agent-runtime/](https://BonifaceAlexander.github.io/cortex-agent-runtime/)
+
 ## Problem We Are Solving
 
 ### The real problem
