@@ -113,6 +113,11 @@ This makes the system:
 - Reviewable
 - Enterprise-friendly
 
+### 6️⃣ High-Scale Distributed Execution
+- **Concurrent Processing**: Execute 100+ agents in parallel using a worker pool.
+- **Batch Polling**: Optimized DB queries for high throughput.
+- **Microservice Ready**: Designed to run as a scalable service (ECS/K8s).
+
 ---
 
 ## 🚫 What We Are NOT Doing

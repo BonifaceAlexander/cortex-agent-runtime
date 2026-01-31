@@ -5,9 +5,10 @@
 ## Key Features
 
 - **Snowflake Native**: Agents run and persist state directly in Snowflake tables.
-- **Agentic Polling Loop**: A dedicated runtime that manages agent execution, tool calling, and memory.
-- **SQL-Based Management**: Define and monitor agents using simple SQL queries.
-- **Extensible**: Support for custom tools and different LLM providers (starting with Cortex).
+- **High-Scale Engine**: Parallel execution worker pool handling multiple agents concurrently.
+- **Disaster Recovery**: Resume interrupted runs deterministically from the last successful step.
+- **SQL-Based Management**: Define and monitor agents using simple SQL tables.
+- **Extensible**: Protocol-based support for Cortex and Mock providers.
 
 ## Getting Started
 

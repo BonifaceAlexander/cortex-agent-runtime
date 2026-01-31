@@ -1,6 +1,6 @@
-from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Protocol, runtime_checkable
 from pydantic import BaseModel
+import time
 
 class LLMResult(BaseModel):
     text: str
@@ -8,17 +8,23 @@ class LLMResult(BaseModel):
     latency_ms: float
     raw_response: Optional[Dict[str, Any]] = None
 
-class LLMProvider(ABC):
-    @abstractmethod
+@runtime_checkable
+class LLMProvider(Protocol):
+    """
+    Protocol defining the interface for any LLM backend.
+    This allows us to swap Cortex for OpenAI, Azure, or Mock providers easily.
+    """
     def generate(self, prompt: str, model: str, config: Dict[str, Any]) -> LLMResult:
-        pass
+        ...
 
-class CortexProvider(LLMProvider):
+class CortexProvider:
+    """
+    Snowflake Cortex implementation of the LLMProvider protocol.
+    """
     def __init__(self, session=None):
         self.session = session
 
     def generate(self, prompt: str, model: str, config: Dict[str, Any]) -> LLMResult:
-        import time
         start_time = time.time()
         
         # In a real environment, we would use self.session.sql(...)
@@ -30,7 +36,7 @@ class CortexProvider(LLMProvider):
             # return parse_result(result)
             pass
         
-        # MOCKED RESPONSE
+        # Fallback / Mock behavior if session is missing (for local testing)
         latency = (time.time() - start_time) * 1000
         return LLMResult(
             text=f"Mock response from {model} for prompt: {prompt[:50]}...",
@@ -39,8 +45,22 @@ class CortexProvider(LLMProvider):
             raw_response={"mock": True}
         )
 
+class MockProvider:
+    """
+    Explicit Mock provider for testing.
+    """
+    def generate(self, prompt: str, model: str, config: Dict[str, Any]) -> LLMResult:
+        return LLMResult(
+            text="Explicit Mock Output",
+            tokens_used=0,
+            latency_ms=0,
+            raw_response={}
+        )
+
 # Factory to get provider
 def get_llm_provider(provider_type: str = "cortex", session=None) -> LLMProvider:
     if provider_type.lower() == "cortex":
         return CortexProvider(session)
+    elif provider_type.lower() == "mock":
+        return MockProvider()
     raise ValueError(f"Unknown provider type: {provider_type}")

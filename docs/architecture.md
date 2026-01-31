@@ -152,8 +152,47 @@ class CortexProvider(LLMProvider):
 
 ---
 
-## 🚫 What We Are NOT Doing
-- ❌ Running persistent agents inside Snowflake.
-- ❌ Replacing Snowflake workflows.
 - ❌ Executing uncontrolled Python loops in Snowflake.
 - ❌ Turning Snowflake into an app server.
+
+---
+
+## 4️⃣ High-Scale Distributed Execution
+
+The runtime is designed for high throughput using a parallel worker model.
+
+### ⚡ Parallel Worker Pool
+- Uses `ThreadPoolExecutor` (configurable `max_workers`) to process multiple agents simultaneously.
+- Main thread handles **Batch Polling** (`LIMIT N`), reducing database round-trips.
+- Worker threads execute agent logic independently.
+
+### 🛡️ Concurrency Safety
+- **Atomic-ish Claiming**: The runtime performs an `UPDATE` on pending rows to lock them before processing, preventing race conditions between multiple runtime instances.
+- **Graceful Shutdown**: Handles `SIGINT` (Ctrl+C) to finish active jobs before stopping, ensuring no run is left in an undefined state.
+
+---
+
+## 5️⃣ Security & Governance (Enterprise Grade)
+
+Snowflake teams care deeply about who can do what. This runtime behaves like a native Snowflake object.
+
+### 🛡️ Role-Based Access Control (RBAC)
+
+| Role | Permissions |
+| :--- | :--- |
+| **SYSADMIN / AGENT_ADMIN** | Can creates, update, and delete entries in `AGENT_DEFINITIONS`. |
+| **ANALYST / USER** | Can insert into `AGENT_RUNS` to trigger execution. Read-only on definitions. |
+| **RUNTIME_SERVICE** | Needs `SELECT` on inputs and `INSERT` on results (`AGENT_RUNS`, `AGENT_STEPS`). |
+
+### 🔐 Secret Management
+- **Do NOT** store secrets in YAML definitions.
+- Use **Snowflake Secrets Objects** (`CREATE SECRET ...`) and reference them in the agent config.
+- The Runtime passes the secret reference to Cortex, keeping the value secure.
+
+### 📜 Audit Trail
+The `AGENT_STEPS` table is append-only.
+- **Every tool call** is logged.
+- **Every model response** is logged.
+- **Every retry** is logged.
+This provides a complete forensic audit trail for compliance.
+

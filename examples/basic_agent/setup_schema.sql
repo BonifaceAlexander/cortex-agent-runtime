@@ -19,9 +19,12 @@ CREATE OR REPLACE TABLE agent_runs (
 CREATE OR REPLACE TABLE agent_steps (
     step_id VARCHAR(36) DEFAULT UUID_STRING(),
     run_id VARCHAR(36),
+    step_index INT,           -- Added for Resume logic (0-indexed)
     step_name VARCHAR(255),
     status VARCHAR(50),
     output VARIANT,
+    model VARCHAR(255),       -- Added for Telemetry
+    tokens_used INT,          -- Added for Telemetry
     latency_ms INT,
     created_at TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP()
 );
