@@ -57,6 +57,21 @@ python run.py
 
 You should see logs indicating that the agent connected to Snowflake, registered itself, and executed the steps defined in `agent.yaml`.
 
+## 4. Advanced Configuration (Optional)
+
+You can tune the runtime performance using environment variables:
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `CR_MAX_WORKERS` | `10` | Number of parallel threads for executing agents. |
+| `CR_FETCH_LIMIT` | `10` | Number of jobs to fetch per polling cycle. |
+
+```bash
+export CR_MAX_WORKERS=50
+export CR_FETCH_LIMIT=50
+python run.py
+```
+
 ## Next Steps
 
 - Explore the [Architecture](architecture.md) to understand how it works under the hood.

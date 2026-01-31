@@ -34,6 +34,11 @@ class StateManager:
         return None
 
     def fetch_pending_runs(self, limit: int = 10) -> List[Dict]:
+        # Allow env override if default value is passed
+        import os
+        if limit == 10: # Only override default
+             limit = int(os.getenv('CR_FETCH_LIMIT', 10))
+
         """
         Poll for PENDING runs with safer claiming logic.
         Strategy: UPDATE status='RUNNING' for next N rows, returning the modified rows if possible.

@@ -1,19 +1,34 @@
+import os
 import time
 import signal
 import sys
-from typing import Dict, Any, Set
+from typing import Dict, Any, Set, Callable, Optional
 from concurrent.futures import ThreadPoolExecutor, Future
 from cortex_runtime.db.state import StateManager
 from cortex_runtime.core.adapter import LLMProvider
 from cortex_runtime.models.agent import AgentDefinition, AgentConfig
+from cortex_runtime.tools.registry import ToolRegistry
 
 class ExecutionEngine:
-    def __init__(self, state_manager: StateManager, provider: LLMProvider, max_workers: int = 10):
+    def __init__(self, state_manager: StateManager, provider: LLMProvider, max_workers: int = 10, tools: Optional[Dict[str, Callable]] = None):
         self.state_manager = state_manager
         self.provider = provider
+        
+        # Env var override for workers
+        env_workers = os.getenv('CR_MAX_WORKERS')
+        if env_workers:
+            max_workers = int(env_workers)
+            
         self.executor = ThreadPoolExecutor(max_workers=max_workers)
         self._running = True
         self._active_futures: Set[Future] = set()
+        
+        # Tool Registry
+        self.tool_registry = ToolRegistry()
+        if tools:
+            for name, func in tools.items():
+                self.tool_registry.register(name, func)
+
         
         # Signal handling
         signal.signal(signal.SIGINT, self._shutdown_handler)
@@ -93,7 +108,12 @@ class ExecutionEngine:
         
         # 4. Execute Steps
         steps = agent_config.steps
-        context = {"input": run_row.get('input', {})}
+        
+        # Initialize context with input AND spread input fields for direct access
+        run_input = run_row.get('input', {})
+        context = {"input": run_input}
+        if isinstance(run_input, dict):
+             context.update(run_input)
         
         try:
             for i in range(current_step_index, len(steps)):
@@ -143,8 +163,27 @@ class ExecutionEngine:
             )
             
         elif step_config.type == "TOOL_USE":
-            # Mock tool execution return dict
-            return {"tool_output": f"Mock result for {step_config.tool_name}", "tokens_used": 0, "latency_ms": 50}
+            # Dynamic Tool Execution
+            start_time = time.time()
+            try:
+                # Assuming input is relevant part of context or step_config, 
+                # for prototype we assume the step has a 'tool_input' or we pass full context
+                # Ideally step_config has 'tool_input' map.
+                # Here we pass full context for simplicity + flexibility
+                output = self.tool_registry.execute(step_config.tool_name, context)
+                
+                latency = (time.time() - start_time) * 1000
+                return {
+                    "tool_output": str(output), # conversion to string for safety
+                    "tokens_used": 0, 
+                    "latency_ms": latency
+                }
+            except Exception as e:
+                return {
+                    "tool_output": f"Error executing tool {step_config.tool_name}: {e}",
+                    "tokens_used": 0,
+                    "latency_ms": (time.time() - start_time) * 1000
+                }
             
         return None
 

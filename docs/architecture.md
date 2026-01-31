@@ -59,12 +59,12 @@ Fine-grained execution trace for debugging and forensics.
 ```sql
 CREATE TABLE AGENT_STEPS (
   run_id STRING,
-  step_index INTEGER,
+  step_index INTEGER,          -- 0-indexed position
   step_name STRING,
   input VARIANT,
   output VARIANT,
-  model STRING,
-  tokens_used NUMBER,
+  model STRING,                -- Cortex model used
+  tokens_used NUMBER,          -- Cost tracking
   latency_ms NUMBER,
   status STRING,
   error_message STRING,

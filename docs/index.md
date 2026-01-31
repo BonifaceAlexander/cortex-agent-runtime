@@ -7,6 +7,8 @@
 - **Snowflake Native**: Agents run and persist state directly in Snowflake tables.
 - **High-Scale Engine**: Parallel execution worker pool handling multiple agents concurrently.
 - **Disaster Recovery**: Resume interrupted runs deterministically from the last successful step.
+- **Dynamic Tooling**: Registry-based execution of real Python tools, not just mocks.
+- **Configurable**: Environment-based tuning for worker pools (`CR_MAX_WORKERS`) and batch sizes (`CR_FETCH_LIMIT`).
 - **SQL-Based Management**: Define and monitor agents using simple SQL tables.
 - **Extensible**: Protocol-based support for Cortex and Mock providers.
 

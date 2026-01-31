@@ -132,6 +132,16 @@ This makes the system:
 - Vector database tooling
 - Model fine-tuning pipelines
 
+### 3. Run the Engine
+The runtime engine polls Snowflake for pending jobs and executes them.
+
+```bash
+# Optional: Set concurrency limits
+export CR_MAX_WORKERS=20
+export CR_FETCH_LIMIT=20
+
+python -m src.cortex_runtime.main
+```
 ### ❌ We are NOT:
 - Competing with Snowflake Cortex
 - Replacing LangGraph or LangChain
