@@ -1,11 +1,20 @@
 import sys
 import os
-from cortex_runtime.db.client import DBClient
-from cortex_runtime.db.state import StateManager
-from cortex_runtime.core.adapter import get_llm_provider
-from cortex_runtime.core.engine import ExecutionEngine
 
-def main():
+def start_runtime():
+    """
+    Initializes and starts the Cortex Agent Runtime loop.
+    This function is called by the CLI command `cortex run`.
+    """
+    from cortex_runtime.db.client import DBClient
+    from cortex_runtime.db.state import StateManager
+    from cortex_runtime.core.adapter import get_llm_provider
+    from cortex_runtime.core.engine import ExecutionEngine
+
+    """
+    Initializes and starts the Cortex Agent Runtime loop.
+    This function is called by the CLI command `cortex run`.
+    """
     print("="*60)
     print("   Cortex Agent Runtime - Snowflake Control Plane")
     print("="*60)
@@ -33,4 +42,4 @@ def main():
         print("\n[Runtime] Shutting down.")
 
 if __name__ == "__main__":
-    main()
+    start_runtime()

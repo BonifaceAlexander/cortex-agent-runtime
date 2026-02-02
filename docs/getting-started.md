@@ -12,13 +12,13 @@ This guide will help you set up the Cortex Agent Runtime and run your first agen
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/cortex-agent-runtime.git
+   git clone https://github.com/BonifaceAlexander/cortex-agent-runtime.git
    cd cortex-agent-runtime
    ```
 
-2. Install dependencies:
+2. Install the package (This installs the `cortex` CLI):
    ```bash
-   pip install -r requirements.txt
+   pip install -e .
    ```
 
 ## Running the Basic Agent Example
@@ -29,9 +29,15 @@ We have included a "Basic Agent" example in the `examples/` directory.
 
 Run the SQL setup script to create the necessary tables (`AGENT_DEFINITIONS`, `AGENT_RUNS`, etc.).
 
+**Option A: Using the CLI (Recommended)**
 ```bash
-cd examples/basic_agent
-snowsql -f setup_schema.sql -D database=YOUR_DB -s schema=YOUR_SCHEMA
+cortex migrate
+```
+
+**Option B: Manual Setup**
+```bash
+cd src/cortex_runtime/migrations/sql
+snowsql -f 001_initial_setup.sql -D database=YOUR_DB -s schema=YOUR_SCHEMA
 ```
 
 ### 2. Configure Credentials
@@ -69,7 +75,7 @@ You can tune the runtime performance using environment variables:
 ```bash
 export CR_MAX_WORKERS=50
 export CR_FETCH_LIMIT=50
-python run.py
+cortex run
 ```
 
 ## Next Steps

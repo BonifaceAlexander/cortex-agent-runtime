@@ -135,12 +135,23 @@ This makes the system:
 ### 3. Run the Engine
 The runtime engine polls Snowflake for pending jobs and executes them.
 
+First, install the package:
+```bash
+pip install -e .
+```
+
+Then run the engine using the CLI:
 ```bash
 # Optional: Set concurrency limits
 export CR_MAX_WORKERS=20
 export CR_FETCH_LIMIT=20
 
-python -m src.cortex_runtime.main
+cortex run
+```
+
+You can also manage database migrations:
+```bash
+cortex migrate
 ```
 ### ❌ We are NOT:
 - Competing with Snowflake Cortex
