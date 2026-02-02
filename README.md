@@ -1,6 +1,7 @@
 # Cortex Agent Runtime
 
 [![Documentation](https://img.shields.io/badge/docs-live-blue.svg)](https://BonifaceAlexander.github.io/cortex-agent-runtime/)
+[![Release](https://img.shields.io/github/v/release/BonifaceAlexander/cortex-agent-runtime)](https://github.com/BonifaceAlexander/cortex-agent-runtime/releases)
 
 > **Full Documentation**: [https://BonifaceAlexander.github.io/cortex-agent-runtime/](https://BonifaceAlexander.github.io/cortex-agent-runtime/)
 
